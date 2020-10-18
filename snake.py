@@ -16,7 +16,7 @@ apple_eaten = False
 num_snakes = 1
 cell_size = 50
 
-frames_per_turn = 600
+frames_per_turn = 700
 
 background = (0, 0, 255)
 snake_col = (0, 255, 0)
