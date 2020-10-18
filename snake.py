@@ -14,11 +14,13 @@ draw_apple = True
 apple_eaten = False
 
 num_snakes = 1
-cell_size = 10
+cell_size = 50
+
+frames_per_turn = 600
 
 background = (0, 0, 255)
 snake_col = (0, 255, 0)
-middle_col = (0, 0, 255)
+middle_col = (0, 255, 0)
 apple_col = (255, 0, 0)
 
 score = 0
@@ -69,20 +71,20 @@ while play_game:
         apple_eaten = True
         score += 1
 
-    if frames_passed > 200:
+    if frames_passed > frames_per_turn:
         dir_updated = False
         if not check_alive(): play_game = False
         frames_passed = 0
         new_head = [snake[0][0], snake[0][1]]
         
         if direction == "UP":
-            new_head[1] -= 10
+            new_head[1] -= cell_size
         elif direction == "DOWN":
-            new_head[1] += 10
+            new_head[1] += cell_size
         elif direction == "RIGHT":
-            new_head[0] += 10
+            new_head[0] += cell_size
         elif direction == "LEFT":
-            new_head[0] -= 10
+            new_head[0] -= cell_size
      
         snake.insert(0, new_head)
         if not apple_eaten: 
