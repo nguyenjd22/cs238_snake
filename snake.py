@@ -18,6 +18,7 @@ cell_size = 50
 
 frames_per_turn = 700
 
+
 background = (0, 0, 255)
 snake_col = (0, 255, 0)
 middle_col = (0, 255, 0)
