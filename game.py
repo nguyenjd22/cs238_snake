@@ -4,10 +4,8 @@ from pygame.locals import *
 import random
 
 pygame.init()
-
 width = 500
 height = 500
-
 screen = pygame.display.set_mode((width, height))
 
 apple = [0, 0]
@@ -17,7 +15,7 @@ apple_eaten = False
 NUM_SNAKES = 1
 CELL_SIZE = 50
 
-FRAMES_PER_TURN = 700
+FRAMES_PER_TURN = 600
 
 BACKGROUND_COL = (0, 0, 255)
 SNAKE_COL = (0, 255, 0)
@@ -25,68 +23,54 @@ APPLE_COL = (255, 0, 0)
 
 score = 0
 
+
 snake = Snake(width, height)
 
-directions = ["UP", "DOWN", "LEFT", "RIGHT"]
-direction = "LEFT"
-
 play_game = True
-dir_updated = False
 frames_passed = 0
+dir_updated = False
 while play_game:
     screen.fill(BACKGROUND_COL)
 
+    #gets the key events and sets the direction of the snake
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             play_game = False
         if event.type == pygame.KEYDOWN and not dir_updated:
-            if event.key == pygame.K_UP and direction != "DOWN":
-                direction = "UP"
-            if event.key == pygame.K_RIGHT and direction != "LEFT":
-                direction = "RIGHT"
-            if event.key == pygame.K_DOWN and direction != "UP":
-                direction = "DOWN"
-            if event.key == pygame.K_LEFT and direction != "RIGHT":
-                direction = "LEFT"
+            if event.key == pygame.K_UP:
+                snake.updateDirection("UP")
+            if event.key == pygame.K_RIGHT:
+                snake.updateDirection("RIGHT")
+            if event.key == pygame.K_DOWN:
+                snake.updateDirection("DOWN")
+            if event.key == pygame.K_LEFT:
+                snake.updateDirection("LEFT")
             dir_updated = True
 
+    #sets the apple location
     if draw_apple:
         draw_apple = False
         apple[0] = random.randint(0, width / CELL_SIZE - 1) * CELL_SIZE
         apple[1] = random.randint(0, height / CELL_SIZE -1) * CELL_SIZE
 
+    #draws apple location
     pygame.draw.rect(screen, APPLE_COL, (apple[0], apple[1], CELL_SIZE, CELL_SIZE))
 
+    #checks to see if the snake head is on the apple aka eats the appel
     if snake.getHeadLocation() == apple:
         draw_apple = True
         apple_eaten = True
         score += 1
 
+    #dictates the speed of the game
     if frames_passed > FRAMES_PER_TURN:
         dir_updated = False
         if not snake.isAlive(): play_game = False
         frames_passed = 0
-        new_head = [snake.body[0][0], snake.body[0][1]]
+        snake.updateBody(apple_eaten)
+        apple_eaten = False
 
-        if direction == "UP":
-            new_head[1] -= CELL_SIZE
-            snake.direction = "UP"
-        elif direction == "DOWN":
-            new_head[1] += CELL_SIZE
-            snake.direction = "DOWN"
-        elif direction == "RIGHT":
-            new_head[0] += CELL_SIZE
-            snake.direction = "RIGHT"
-        elif direction == "LEFT":
-            new_head[0] -= CELL_SIZE
-            snake.direction = "LEFT"
-
-        snake.body.insert(0, new_head)
-        if not apple_eaten:
-            snake.body.pop(snake.getLength() - 1)
-        else:
-            apple_eaten = False
-
+    #draws the snake at every time step
     for snek in snake.body:
         pygame.draw.rect(screen, SNAKE_COL, (snek[0], snek[1], CELL_SIZE, CELL_SIZE))
         pygame.draw.rect(screen, SNAKE_COL, (snek[0] + 1, snek[1] + 1, CELL_SIZE - 2, CELL_SIZE - 2))

@@ -1,14 +1,12 @@
-import pygame
-from pygame.locals import *
 import random
 
 SNAKE_COL = (0, 255, 0)
-cell_size = 50
+CELL_SIZE = 50
 directions = ["UP", "DOWN", "LEFT", "RIGHT"]
 
 class Snake:
     def __init__(self, width, height):
-            self.body = [[width // 2, height // 2], [width // 2, height // 2 - cell_size], [width // 2, height // 2 - 2 * cell_size]]
+            self.body = [[width // 2, height // 2], [width // 2, height // 2 - CELL_SIZE], [width // 2, height // 2 - 2 * CELL_SIZE]]
             self.head = self.body[0]
             self.length = len(self.body)
             self.direction = "LEFT"
@@ -18,8 +16,10 @@ class Snake:
 
     def getHeadLocation(self):
         return self.body[0]
+
     def getLength(self):
         return len(self.body)
+
     def getDirection(self):
         return self.direction
 
@@ -31,3 +31,29 @@ class Snake:
                 return False
 
         return True
+
+    def updateBody(self, apple_eaten):
+        new_head = [self.body[0][0], self.body[0][1]]
+
+        if self.direction == "UP":
+            new_head[1] -= CELL_SIZE
+        elif self.direction == "DOWN":
+            new_head[1] += CELL_SIZE
+        elif self.direction == "RIGHT":
+            new_head[0] += CELL_SIZE
+        elif self.direction == "LEFT":
+            new_head[0] -= CELL_SIZE
+
+        self.body.insert(0, new_head)
+        if not apple_eaten:
+            self.body.pop(self.getLength() - 1)
+
+    def updateDirection(self, dir):
+        if dir == "UP" and self.direction != "DOWN":
+            self.direction = dir
+        elif dir == "DOWN" and self.direction != "UP":
+            self.direction = dir
+        elif dir == "RIGHT" and self.direction != "LEFT":
+            self.direction = dir
+        elif dir == "LEFT" and self.direction != "RIGHT":
+            self.direction = dir
