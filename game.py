@@ -8,14 +8,13 @@ width = 500
 height = 500
 screen = pygame.display.set_mode((width, height))
 
-apple = [0, 0]
 draw_apple = True
 apple_eaten = False
 
 NUM_SNAKES = 1
 CELL_SIZE = 50
 
-FRAMES_PER_TURN = 600
+FRAMES_PER_TURN = 700
 
 BACKGROUND_COL = (0, 0, 255)
 SNAKE_COL = (0, 255, 0)
@@ -50,14 +49,12 @@ while play_game:
     #sets the apple location
     if draw_apple:
         draw_apple = False
-        apple[0] = random.randint(0, width / CELL_SIZE - 1) * CELL_SIZE
-        apple[1] = random.randint(0, height / CELL_SIZE -1) * CELL_SIZE
-
+        snake.setNewAppleLocation()
     #draws apple location
-    pygame.draw.rect(screen, APPLE_COL, (apple[0], apple[1], CELL_SIZE, CELL_SIZE))
+    pygame.draw.rect(screen, APPLE_COL, (snake.apple[0], snake.apple[1], CELL_SIZE, CELL_SIZE))
 
     #checks to see if the snake head is on the apple aka eats the appel
-    if snake.getHeadLocation() == apple:
+    if snake.getHeadLocation() == snake.apple:
         draw_apple = True
         apple_eaten = True
         score += 1

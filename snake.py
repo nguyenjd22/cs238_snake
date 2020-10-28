@@ -12,7 +12,12 @@ class Snake:
             self.direction = "LEFT"
             self.ENV_WIDTH = width
             self.ENV_HEIGHT = height
+            self.apple = [random.randint(0, self.ENV_WIDTH / CELL_SIZE - 1) * CELL_SIZE,  random.randint(0, self.ENV_WIDTH / CELL_SIZE - 1) * CELL_SIZE]
 
+    def setNewAppleLocation(self):
+        while self.apple in self.body:
+            self.apple[0] = random.randint(0, self.ENV_WIDTH / CELL_SIZE - 1) * CELL_SIZE
+            self.apple[1] = random.randint(0, self.ENV_HEIGHT / CELL_SIZE - 1) * CELL_SIZE
 
     def getHeadLocation(self):
         return self.body[0]
@@ -57,3 +62,6 @@ class Snake:
             self.direction = dir
         elif dir == "LEFT" and self.direction != "RIGHT":
             self.direction = dir
+
+    def getState(self):
+        return [self.body, self.apple, self.direction]
