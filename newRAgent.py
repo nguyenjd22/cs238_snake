@@ -1,3 +1,4 @@
+
 import pygame
 from snake import Snake
 from pygame.locals import *
@@ -20,6 +21,7 @@ class Agent():
         self.alpha = alpha
         self.num_states = states
         self.num_actions = actions
+        self.old_dist = float("inf")
 
     def make_state(self):
         old = self.snake.getState()
@@ -96,8 +98,22 @@ class Agent():
         gamma, Q, alpha = self.gamma, self.Q, self.alpha
         s_prime_row = self.Q[self.s_prime]
         max_new_Q = s_prime_row.max()
-        self.Q[self.s, self.a]  += alpha * (r + gamma * max_new_Q - Q[self.s, self.a])
+        self.Q[self.s, self.a]  += alpha * (self.r + gamma * max_new_Q - Q[self.s, self.a])
 
+    def getAppleDist(self):
+        x, y = self.snake.getHeadLocation()
+        apple = self.snake.getState()[1]
+        new_dist = abs(x - apple[0]) + abs(y - apple[1])
+        return new_dist
 
-
-
+    def updateAppleDist(self, dist):
+        self.old_dist = dist
+    
+    def gotCloser(self):
+        new_dist = self.getAppleDist()
+        if new_dist > self.old_dist:
+            self.old_dist = new_dist
+            return False
+        else:
+            self.old_dist = new_dist
+            return True

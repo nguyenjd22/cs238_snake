@@ -1,17 +1,16 @@
-import pygame
 from snake import Snake
-from pygame.locals import *
-import random
 import numpy as np
+
 
 CELL_SIZE = 50
 
-class Agent():
-    def __init__(self, snake, states, actions, epsilon, gamma, alpha, Q):
+class LAgent():
+    def __init__(self, snake, states, actions, epsilon, gamma, alpha, Q, N, lam):
         self.snake = snake
         self.grid_dims = snake.ENV_HEIGHT / CELL_SIZE
         self.epsilon = epsilon
         self.Q = Q
+        self.N = N
         self.s = 0
         self.r = 0
         self.a = 0
@@ -20,6 +19,7 @@ class Agent():
         self.alpha = alpha
         self.num_states = states
         self.num_actions = actions
+        self.lam = lam
 
     def make_state(self):
         old = self.snake.getState()
@@ -96,8 +96,11 @@ class Agent():
         gamma, Q, alpha = self.gamma, self.Q, self.alpha
         s_prime_row = self.Q[self.s_prime]
         max_new_Q = s_prime_row.max()
-        self.Q[self.s, self.a]  += alpha * (r + gamma * max_new_Q - Q[self.s, self.a])
 
+        self.N[self.s, self.a] += 1
+        temp = self.r + gamma * max_new_Q - Q[self.s, self.a]
 
-
-
+        for i in range(self.num_states):
+            for j in range(self.num_actions):
+                Q[i, j] = alpha * temp * self.N[i, j]
+                self.N[i, j] *= gamma * self.lam
