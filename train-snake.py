@@ -8,7 +8,7 @@ import numpy as np
 pygame.init()
 width = 500
 height = 500
-#screen = pygame.display.set_mode((width, height))
+screen = pygame.display.set_mode((width, height))
 
 
 draw_apple = True
@@ -17,7 +17,7 @@ apple_eaten = False
 NUM_SNAKES = 1
 CELL_SIZE = 50
 
-FRAMES_PER_TURN = 600
+FRAMES_PER_TURN = 200
 
 BACKGROUND_COL = (0, 0, 255)
 SNAKE_COL = (0, 255, 0)
@@ -34,7 +34,7 @@ Q = np.zeros((states, actions))
 #snake = Snake(width, height)
 #agent = Agent(snake, states, actions, epsilon, gamma, alpha, Q)
 #agent.s = agent.make_state()
-num_episodes = 1000
+num_episodes = 10
 directions = ["UP", "DOWN", "LEFT", "RIGHT"]
 
 for i in range(num_episodes):
@@ -49,7 +49,7 @@ for i in range(num_episodes):
 
 
     while play_game:
-        #screen.fill(BACKGROUND_COL)
+        screen.fill(BACKGROUND_COL)
 
         if not dir_updated:
             if np.random.rand() < agent.epsilon:
@@ -70,7 +70,7 @@ for i in range(num_episodes):
             draw_apple = False
             snake.setNewAppleLocation()
         #draws apple location
-        #pygame.draw.rect(screen, APPLE_COL, (snake.apple[0], snake.apple[1], CELL_SIZE, CELL_SIZE))
+        pygame.draw.rect(screen, APPLE_COL, (snake.apple[0], snake.apple[1], CELL_SIZE, CELL_SIZE))
 
         #checks to see if the snake head is on the apple aka eats the apple
         if snake.getHeadLocation() == snake.apple:
@@ -95,18 +95,18 @@ for i in range(num_episodes):
 
         #draws the snake at every time step
         for snek in snake.body:
-            pass
-            #pygame.draw.rect(screen, SNAKE_COL, (snek[0], snek[1], CELL_SIZE, CELL_SIZE))
-            #pygame.draw.rect(screen, SNAKE_COL, (snek[0] + 1, snek[1] + 1, CELL_SIZE - 2, CELL_SIZE - 2))
+            # pass
+            pygame.draw.rect(screen, SNAKE_COL, (snek[0], snek[1], CELL_SIZE, CELL_SIZE))
+            pygame.draw.rect(screen, SNAKE_COL, (snek[0] + 1, snek[1] + 1, CELL_SIZE - 2, CELL_SIZE - 2))
 
         agent.updateQ()
 
-        #pygame.display.update()
+        pygame.display.update()
         frames_passed += 1
 
     print(f"You got {score} points!")
 
 ##need to add way to save policy and re-use
 
-print(Q)
+# print(Q)
 pygame.quit()
