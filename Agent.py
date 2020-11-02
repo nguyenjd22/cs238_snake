@@ -1,4 +1,3 @@
-from Agent import Agent
 import pygame
 from snake import Snake
 from pygame.locals import *
