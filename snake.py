@@ -1,19 +1,34 @@
+
 import random
 
 SNAKE_COL = (0, 255, 0)
-CELL_SIZE = 50
+CELL_SIZE = 10
 directions = ["UP", "DOWN", "LEFT", "RIGHT"]
+width = 500
+height = 500
 
 class Snake:
     def __init__(self, width, height):
-            self.body = [[width // 2, height // 2], [width // 2, height // 2 - CELL_SIZE], [width // 2, height // 2 - 2 * CELL_SIZE]]
+            self.body = [[width // 2, height // 2], [width // 2, height // 2 + CELL_SIZE], [width // 2, height // 2 + 2 * CELL_SIZE]]
             self.head = self.body[0]
             self.length = len(self.body)
-            self.direction = "LEFT"
+            self.direction = "UP"
             self.ENV_WIDTH = width
             self.ENV_HEIGHT = height
+            self.apple = [0, 0]
+            self.old_end = [0, 0]
 
 
+    def initApple(self):
+        self.apple[0] = random.randint(0, self.ENV_WIDTH / CELL_SIZE - 1) * CELL_SIZE
+        self.apple[1] = random.randint(0, self.ENV_HEIGHT / CELL_SIZE - 1) * CELL_SIZE
+
+    
+    def setNewAppleLocation(self):
+        while self.apple in self.body:
+            self.apple[0] = random.randint(0, self.ENV_WIDTH / CELL_SIZE - 1) * CELL_SIZE
+            self.apple[1] = random.randint(0, self.ENV_HEIGHT / CELL_SIZE - 1) * CELL_SIZE
+    
     def getHeadLocation(self):
         return self.body[0]
 
@@ -25,17 +40,21 @@ class Snake:
 
     def isAlive(self):
         if self.body[0][0] >= self.ENV_WIDTH or self.body[0][0] < 0 or self.body[0][1] >= self.ENV_HEIGHT or self.body[0][1] < 0:
+            #print("hit wall")
             return False
         head = self.body[0]
-        #for x in range(self.getLength()):
-            #if self.body[x] == self.body[0] and x != 0:
-                #print(f"Head: {self.body[0]}")
-                #return False
-        if head in self.body[1:]: return False
+        if head in self.body[1:]: 
+            #print("hit myself")
+            #print(head)
+            return False
 
         return True
 
-    def updateBody(self, apple_eaten):
+    def addSnek(self):
+        self.body.append(self.old_end)
+
+
+    def updateBody(self):
         new_head = [self.body[0][0], self.body[0][1]]
 
         if self.direction == "UP":
@@ -48,8 +67,9 @@ class Snake:
             new_head[0] -= CELL_SIZE
 
         self.body.insert(0, new_head)
-        if not apple_eaten:
-            self.body.pop(self.getLength() - 1)
+        self.old_end = self.body[self.getLength() - 1].copy()
+        self.body.pop(self.getLength() - 1)
+
 
     def updateDirection(self, dir):
         if dir == "UP" and self.direction != "DOWN":
@@ -60,3 +80,6 @@ class Snake:
             self.direction = dir
         elif dir == "LEFT" and self.direction != "RIGHT":
             self.direction = dir
+
+    def getState(self):
+        return [self.body, self.apple, self.direction]
